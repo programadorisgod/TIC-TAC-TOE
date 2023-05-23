@@ -1,86 +1,81 @@
 
-import Square from "./Square";
-import { useEffect } from "react";
+import Square from './Square'
+import { useEffect } from 'react'
 
-export default function Board({ xIsNext, squares, onPlay, Winner }) {
-  const winInfo = calculateWinner(squares);
-  const winLine = winInfo.line;
+export default function Board ({ xIsNext, squares, onPlay, Winner }) {
+  const winInfo = calculateWinner(squares)
+  const winLine = winInfo.line
 
-
-
-  function handleClick(i) {
+  function handleClick (i) {
     if (calculateWinner(squares).winner || squares[i]) {
       console.log(squares)
-      return;
+      return
     }
-    const nextSquares = squares.slice();
+    const nextSquares = squares.slice()
     if (xIsNext) {
-      nextSquares[i] = "X";
+      nextSquares[i] = 'X'
     } else {
-      nextSquares[i] = "O";
+      nextSquares[i] = 'O'
     }
 
-    let row = 1 + Math.floor(i / 3);
-    let col = 1 + (i % 3);
+    const row = 1 + Math.floor(i / 3)
+    const col = 1 + (i % 3)
 
-    let coordinates = {};
-    coordinates.row = row;
-    coordinates.col = col;
+    const coordinates = {}
+    coordinates.row = row
+    coordinates.col = col
 
-    let obj = {};
-    obj.squares = nextSquares;
-    obj.coordinates = coordinates;
+    const obj = {}
+    obj.squares = nextSquares
+    obj.coordinates = coordinates
 
-    onPlay(obj);
+    onPlay(obj)
   }
 
-  const winner = calculateWinner(squares).winner;
-  let status;
+  const winner = calculateWinner(squares).winner
+  let status
 
   if (winner) {
-    status = "Ganador: " + winner;
+    status = 'Ganador: ' + winner
   } else {
     if (winInfo.isDraw) {
-      status = "Empate";
+      status = 'Empate'
     } else {
-      status = "Siguiente Jugador: " + (xIsNext ? "X" : "O");
+      status = 'Siguiente Jugador: ' + (xIsNext ? 'X' : 'O')
     }
   }
 
-
-useEffect(() => {
-  if(winner !== null){
+  useEffect(() => {
+    if (winner !== null) {
       Winner(winner)
-  }
-}, [winner])
+    }
+  }, [winner])
 
-
-
-  let board = [];
+  const board = []
   for (let index = 0; index < 3; index++) {
-    let cols = [];
+    const cols = []
     for (let j = 0; j < 3; j++) {
-      let pos = index * 3 + j;
-      cols.push(<Square value={squares[pos]} onSquareClick={() => handleClick(pos)} key={pos} highlight={winLine && winLine.includes(pos)} />);
+      const pos = index * 3 + j
+      cols.push(<Square value={squares[pos]} onSquareClick={() => handleClick(pos)} key={pos} highlight={winLine && winLine.includes(pos)} />)
     }
     board.push(
-      <div key={index} className="board-row">
+      <div key={index} className='board-row'>
         {cols}
       </div>
-    );
+    )
   }
 
   return (
     <>
-      <div className="status">{status}</div>
+      <div className='status'>{status}</div>
       {board}
-    
+
     </>
-  );
+  )
 }
 /*  */
 
-function calculateWinner(squares) {
+function calculateWinner (squares) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -89,22 +84,22 @@ function calculateWinner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6],
-  ];
+    [2, 4, 6]
+  ]
   for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
+    const [a, b, c] = lines[i]
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return { winner: squares[a], line: lines[i] };
+      return { winner: squares[a], line: lines[i] }
     }
   }
 
-  let isDraw = true;
+  let isDraw = true
   for (let j = 0; j < squares.length; j++) {
     if (squares[j] === null) {
-      isDraw = false;
-      break;
+      isDraw = false
+      break
     }
   }
 
-  return { winner: null, line: null, isDraw: isDraw };
+  return { winner: null, line: null, isDraw }
 }
